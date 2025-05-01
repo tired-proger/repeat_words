@@ -3,6 +3,16 @@ import { toggleLoaderVisibility } from "../store/Slices/loaderSlice";
 import { setWords, setIsLoadingWords, editDescription, editSentences } from "../store/Slices/wordsSlice";
 import { setScroll } from "../utils/setScroll";
 
+//helper function for set headers
+const addHeaders = (login, pass) => {
+    const creds = JSON.stringify({ login, pass });
+    return ({
+        headers: {
+            "Authorization": `Basic ${creds}`
+        }
+    });
+}
+
 function getRandomWords(data) {
 
     const { mode, setIsPressed } = data;
@@ -30,13 +40,15 @@ function getRandomWords(data) {
 //edit word points
 function editDescriptionWord(data) {
 
-    const { id, text, setSnack, setDescriptionValue } = data;
+    const { id, text, setSnack, setDescriptionValue, login, pass } = data;
 
     return async (dispatch) => {
         try {
 
             dispatch(toggleLoaderVisibility(true));
-            await api.post("description", { id, text });
+            const response = await api.post("description", { id, text }, addHeaders(login, pass));
+            if (response.statusText !== "OK") throw new Error("Ошибка");
+            
             dispatch(editDescription({ id, content: text }));
             if (setDescriptionValue) setDescriptionValue("");
             dispatch(toggleLoaderVisibility(false));
@@ -52,15 +64,16 @@ function editDescriptionWord(data) {
 
 function editSentenceWord(data) {
 
-    const { id, text, wordID, setSnack } = data;
+    const { id, text, wordID, setSnack, login, pass } = data;
 
     return async (dispatch) => {
         try {
 
             dispatch(toggleLoaderVisibility(true));
-            await api.post("sentences/edit", { id, text });
+            const response = await api.post("sentences/edit", { id, text }, addHeaders(login, pass));
+            if (response.statusText !== "OK") throw new Error("Ошибка");
+
             dispatch(editSentences({ wordID, mode: "editing", content: text, sentenceId: id }));
-    
             dispatch(toggleLoaderVisibility(false));
             setSnack({ visible: true, mode: "success", content: "Данные обновлены" });
     
@@ -76,21 +89,21 @@ function editSentenceWord(data) {
 
 function addSentenceWord(data) {
 
-    const { text, wordID, setSnack } = data;
+    const { text, wordID, setSnack, login, pass } = data;
 
     return async (dispatch) => {
         try {
 
             dispatch(toggleLoaderVisibility(true));
-            let response = await api.post("sentences/add", { id: wordID, text });
+            const response = await api.post("sentences/add", { id: wordID, text }, addHeaders(login, pass));
+            if (response.statusText !== "OK") throw new Error("Ошибка");
+
             dispatch(editSentences({ wordID, mode: "add", content: text, id: response.data.id }));
-    
             dispatch(toggleLoaderVisibility(false));
             setSnack({ visible: true, mode: "success", content: "Данные обновлены" });
     
         } catch(e) {
     
-            console.log(e);
             dispatch(toggleLoaderVisibility(false));
             setSnack({ visible: true, mode: "error", content: "Ошибка обновления данных" });
     
@@ -101,15 +114,16 @@ function addSentenceWord(data) {
 
 function deleteSentenceWord(data) {
 
-    const { id, wordID, setSnack } = data;
+    const { id, wordID, setSnack, login, pass } = data;
 
     return async (dispatch) => {
         try {
 
             dispatch(toggleLoaderVisibility(true));
-            await api.post("sentences/delete", { id });
+            const response = await api.post("sentences/delete", { id }, addHeaders(login, pass));
+            if (response.statusText !== "OK") throw new Error("Ошибка");
+
             dispatch(editSentences({ wordID, mode: "delete", sentenceId: id }));
-    
             dispatch(toggleLoaderVisibility(false));
             setSnack({ visible: true, mode: "success", content: "Данные обновлены" });
     
@@ -126,13 +140,14 @@ function deleteSentenceWord(data) {
 //add word points
 function sendWord(props) {
 
-    let { data, setListSentences, setTitleInput, setDescriptionInput, setSnack } = props;
+    let { data, setListSentences, setTitleInput, setDescriptionInput, setSnack, login, pass } = props;
 
     return async (dispatch) => {
         try {
 
             dispatch(toggleLoaderVisibility(true));
-            await api.post("add", data);
+            const response = await api.post("add", data, addHeaders(login, pass));
+            if (response.statusText !== "OK") throw new Error("Ошибка");
     
             dispatch(toggleLoaderVisibility(false));
             setListSentences([]);

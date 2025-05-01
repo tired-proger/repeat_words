@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { validateInput } from '../../utils/validateInput';
 import { sendWord } from '../../api/points';
 import { useSelector, useDispatch } from 'react-redux';
+import { setDialogData } from '../../store/Slices/credentialsSlice';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
@@ -41,7 +42,12 @@ const AddWord = () => {
         if (descriptionInput) data.description = descriptionInput;
         if (listSentences.length) data.sentences = listSentences.map(el => el.sentence); 
 
-        dispatch(sendWord({ data, setListSentences, setTitleInput, setDescriptionInput, setSnack }));
+        dispatch(setDialogData({ 
+            visible: true, 
+            callback: sendWord, 
+            callbackData: { data, setListSentences, setTitleInput, setDescriptionInput, setSnack } })
+        );
+        
     }
 
     const sentenceHandlers = useMemo(() => ({
@@ -143,9 +149,6 @@ const AddWord = () => {
                 </DialogTitle>
                 <DialogContent>
                     <Typography variant={ matchesOne ? "h5" : "h4" }>{ titleInput }</Typography>
-                    <Typography variant={ matchesOne ? "body2" : "body1" } sx={{ mt: "4px", color: "#d32f2f" }}>
-                        *Удалить слово после сохранения не получится
-                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleCloseDialog("send")}>Добавить</Button>

@@ -5,6 +5,7 @@ import Main from "./components/Main/Main";
 import AddWord from "./components/AddWord/AddWord";
 import Loader from "./components/Loader/Loader";
 import Edit from "./components/Edit/Edit";
+import CredentialsModal from "./components/CredentialsModal/CredentialsModal";
 
 function App() {  
   return (
@@ -17,6 +18,7 @@ function App() {
         </Routes>
       </div>
       <Loader />
+      <CredentialsModal />
     </React.Fragment>
   );
 }

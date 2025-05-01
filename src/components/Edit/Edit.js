@@ -6,6 +6,7 @@ import Input from '../Input/Input';
 import AddSentence from '../AddSentence/AddSentence';
 import { useSelector, useDispatch } from 'react-redux';
 import { editDescriptionWord, editSentenceWord, addSentenceWord, deleteSentenceWord } from '../../api/points';
+import { setDialogData } from '../../store/Slices/credentialsSlice';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
@@ -60,7 +61,11 @@ const Edit = () => {
         setDialogVisibility(false);
         if (mode === "send") { 
             const { cb, ...data } = editContent.current;
-            dispatch(cb({ ...data, setSnack }));
+            dispatch(setDialogData({
+                visible: true,
+                callback: cb,
+                callbackData: { ...data, setSnack }
+            }));
         }
     }
 
