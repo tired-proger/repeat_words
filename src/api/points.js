@@ -55,6 +55,7 @@ function editDescriptionWord(data) {
             closeDialog();
             dispatch(toggleLoaderVisibility(true));
             const response = await api.post("description", { id, text }, addHeaders(login, pass));
+            console.log(response.statusText !== "OK");
             if (response.statusText !== "OK") throw new Error("Ошибка");
             
             dispatch(editDescription({ id, content: text }));
