@@ -55,8 +55,7 @@ function editDescriptionWord(data) {
             closeDialog();
             dispatch(toggleLoaderVisibility(true));
             const response = await api.post("description", { id, text }, addHeaders(login, pass));
-            console.log(response);
-            if (response.statusText !== "OK") throw new Error("Ошибка");
+            if (response.statusText !== "OK" && response.status !== 200) throw new Error("Ошибка");
             
             dispatch(editDescription({ id, content: text }));
             if (setDescriptionValue) setDescriptionValue("");
@@ -81,7 +80,7 @@ function editSentenceWord(data) {
             closeDialog();
             dispatch(toggleLoaderVisibility(true));
             const response = await api.post("sentences/edit", { id, text }, addHeaders(login, pass));
-            if (response.statusText !== "OK") throw new Error("Ошибка");
+            if (response.statusText !== "OK" && response.status !== 200) throw new Error("Ошибка");
 
             dispatch(editSentences({ wordID, mode: "editing", content: text, sentenceId: id }));
             setSnack({ visible: true, mode: "success", content: "Данные обновлены" });
@@ -105,7 +104,7 @@ function addSentenceWord(data) {
             closeDialog();
             dispatch(toggleLoaderVisibility(true));
             const response = await api.post("sentences/add", { id: wordID, text }, addHeaders(login, pass));
-            if (response.statusText !== "OK") throw new Error("Ошибка");
+            if (response.statusText !== "OK" && response.status !== 200) throw new Error("Ошибка");
 
             dispatch(editSentences({ wordID, mode: "add", content: text, id: response.data.id }));
             setSnack({ visible: true, mode: "success", content: "Данные обновлены" });
@@ -129,7 +128,7 @@ function deleteSentenceWord(data) {
             closeDialog();
             dispatch(toggleLoaderVisibility(true));
             const response = await api.post("sentences/delete", { id }, addHeaders(login, pass));
-            if (response.statusText !== "OK") throw new Error("Ошибка");
+            if (response.statusText !== "OK" && response.status !== 200) throw new Error("Ошибка");
 
             dispatch(editSentences({ wordID, mode: "delete", sentenceId: id }));
             setSnack({ visible: true, mode: "success", content: "Данные обновлены" });
@@ -154,7 +153,7 @@ function sendWord(props) {
             closeDialog();
             dispatch(toggleLoaderVisibility(true));
             const response = await api.post("add", data, addHeaders(login, pass));
-            if (response.statusText !== "OK") throw new Error("Ошибка");
+            if (response.statusText !== "OK" && response.status !== 200) throw new Error("Ошибка");
     
             setListSentences([]);
             setDescriptionInput("");
