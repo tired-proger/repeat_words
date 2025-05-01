@@ -20,7 +20,7 @@ const CredentialsModal = () => {
     const sendData = () => {
         if (!input.login.value.trim()) return setInput(state => ({ ...state, login: { ...state.login, hasError: true } }));
         if (!input.pass.value.trim()) return setInput(state => ({ ...state, pass: { ...state.pass, hasError: true } }));
-        dispatch(callback({ ...callbackData, login: input.login.value, pass: input.pass.value }));
+        dispatch(callback({ ...callbackData, login: input.login.value, pass: input.pass.value, closeDialog }));
     }
 
     const focusHandler = (type) => {
